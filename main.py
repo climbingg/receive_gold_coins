@@ -4,6 +4,12 @@ import time
 import pygame
 
 
+# 初始化
+all_sprites = pygame.sprite.Group()
+
+# 設定幀數
+FPS = 60
+
 # 設置視窗大小
 WIDTH, HEIGHT = 1180 * 3, 548 * 3
 
@@ -44,14 +50,21 @@ def main() -> None:
     get_coins_sound = pygame.mixer.Sound("sound/get_gold_coins.wav")
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("receve glod coins game")
+    clock = pygame.time.Clock()
     # 引入圖片
     board = pygame.image.load("img/board.png")
     board = pygame.transform.scale(board, (1180 * 3, 548 * 3))
     mini_man = Player()
+    all_sprites.add(mini_man)
+    all_sprites.draw(screen)
     screen.blit(board, (0, 0))
     running = True
     pygame.display.update()
     while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+        clock.tick(FPS)
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
             pass
