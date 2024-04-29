@@ -1,6 +1,7 @@
 """接金幣遊戲專案"""
 
 import time
+import os
 import pygame
 
 
@@ -47,6 +48,8 @@ def main() -> None:
     """主程式"""
     pygame.init()
     pygame.mixer.init()
+    pygame.mixer.music.load(os.path.join("sound", "background.ogg"))
+    pygame.mixer.music.play(-1)
     get_coins_sound = pygame.mixer.Sound("sound/get_gold_coins.wav")
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("receve glod coins game")
