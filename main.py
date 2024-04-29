@@ -59,8 +59,8 @@ def main() -> None:
     board = pygame.transform.scale(board, (1180 * 3, 548 * 3))
     mini_man = Player()
     all_sprites.add(mini_man)
-    all_sprites.draw(screen)
     screen.blit(board, (0, 0))
+    all_sprites.draw(screen)
     running = True
     pygame.display.update()
     while running:
@@ -73,8 +73,6 @@ def main() -> None:
             pass
         if keys[pygame.K_RIGHT]:
             pass
-        break
-    time.sleep(4)
     pygame.quit()
 
 
