@@ -113,6 +113,7 @@ def main() -> None:
             screen.blit(rendered_text, text_rect)
             pygame.display.update()
             time.sleep(5)
+            continue
         clock.tick(FPS)
         screen.fill(BLACK)
         if random.randint(1, 15) == 1:
