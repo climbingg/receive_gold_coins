@@ -1,79 +1,86 @@
 """接金幣遊戲專案"""
 
-import time
-import os
 import pygame
+import pygame.freetype
 
+from screen_main_page import ScreenSetting
+from coin import Coin
+from player import Player
 
 # 初始化
-all_sprites = pygame.sprite.Group()
+pygame.init()
 
-# 設定幀數
-FPS = 60
+# 新增screen_setting
+screen_main = ScreenSetting(pygame.display.Info())
 
-# 設置視窗大小
-WIDTH, HEIGHT = 1180 * 3, 548 * 3
+# 初始化角色
+player = Player(pygame.display.Info())
 
-# 設定常用RGB
-BLACK = (0, 0, 0)
+# 金幣列表
+coins = []
 
+# 字體
+font_size = 36
+font = pygame.freetype.Font(r"font\mexcellent.otf", font_size)
 
-class Player(pygame.sprite.Sprite):
-    """玩家角色"""
+# 顯示分數、生命
+def show_score(score, life):
+    font.render_to(screen_main.screen, (4, 10), f"Score: {score}", (0, 0, 0), None, size=font_size)
+    font.render_to(screen_main.screen, (4, 10 + font_size + 4), f"Life: {life}", (0, 0, 0), None, size=font_size)
 
-    def __init__(self):
-        super().__init__()
-        self.image = pygame.image.load("img/mini_man.png")
-        self.rect = self.image.get_rect()
-        self.rect.centery = HEIGHT - 400
-        self.rect.centerx = WIDTH / 2
+# 初始化遊戲狀態
+def init_game():
+    player.__init__(pygame.display.Info())
+    screen_main.__init__(pygame.display.Info())
+    coins.clear()
 
-    def move_left(self):
-        """向左移動"""
+again = False
 
-    def move_right(self):
-        """向右移動"""
+while True:
 
+    # 事件處理
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            screen_main.quit()
 
-class Coin(pygame.sprite.Sprite):
-    """金幣"""
+    # 玩家移動
+    if event.type == pygame.KEYDOWN:
+        player.update()
 
-    def __init__(self):
-        super().__init__()
-        self.image = pygame.image.load("img/coin.png")
-        self.rect = self.image.get_rect()
+    # 生成金幣
+    if pygame.time.get_ticks() % 100 == 0:
+        coin = Coin(pygame.display.Info())
+        coins.append(coin)
 
+    # 更新金幣
+    for coin in coins:
+        if coin.update():
+            player.life -= 1
+            coins.remove(coin)
+            if player.life == 0:
+                again = screen_main.game_over()
 
-def main() -> None:
-    """主程式"""
-    pygame.init()
-    pygame.mixer.init()
-    pygame.mixer.music.load(os.path.join("sound", "background.ogg"))
-    pygame.mixer.music.play(-1)
-    get_coins_sound = pygame.mixer.Sound("sound/get_gold_coins.wav")
-    screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    pygame.display.set_caption("receve glod coins game")
-    clock = pygame.time.Clock()
-    # 引入圖片
-    board = pygame.image.load("img/board.png")
-    board = pygame.transform.scale(board, (1180 * 3, 548 * 3))
-    mini_man = Player()
-    all_sprites.add(mini_man)
-    screen.blit(board, (0, 0))
-    all_sprites.draw(screen)
-    running = True
+        # 碰撞偵測
+        elif player.player_rect.colliderect(coin.coin_rect):
+            coins.remove(coin)
+            player.score += 1
+
+    if again:
+        init_game()
+        again = False
+
+    # 背景
+    screen_main.screen.fill((255, 255, 255))
+
+    # 繪製金幣
+    for coin in coins:
+        screen_main.screen.blit(coin.coin, coin.coin_rect)
+
+    # 繪製玩家
+    screen_main.screen.blit(player.player, player.player_rect)
+
+    # 顯示分數、生命
+    show_score(player.score, player.life)
+
+    screen_main.clock.tick(screen_main.fps)
     pygame.display.update()
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-        clock.tick(FPS)
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
-            pass
-        if keys[pygame.K_RIGHT]:
-            pass
-    pygame.quit()
-
-
-main()
