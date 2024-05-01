@@ -104,13 +104,15 @@ def main() -> None:
             if event.type == pygame.QUIT:
                 running = False
         if time.time() - t > 20:
+            screen.fill(BLACK)
+            screen.blit(board, (0, 0))
             running = False
             all_sprites.empty()
             rendered_text = final_font.render(f"final score: {score[0]}", True, BLACK)
             text_rect = rendered_text.get_rect(center=(WIDTH / 2, HEIGHT / 2))
             screen.blit(rendered_text, text_rect)
             pygame.display.update()
-            time.sleep(3)
+            time.sleep(5)
         clock.tick(FPS)
         screen.fill(BLACK)
         if random.randint(1, 15) == 1:
