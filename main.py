@@ -23,16 +23,32 @@ class Player(pygame.sprite.Sprite):
 
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load("img/mini_man.png")
+        self.image = pygame.transform.scale(pygame.image.load("img/mini_man.png"), (512, 512))
+        # img/mini_man.png原本是1024, 1024 被改成512, 512
         self.rect = self.image.get_rect()
-        self.rect.centery = HEIGHT - 400
+        self.rect.centery = HEIGHT - 250
         self.rect.centerx = WIDTH / 2
 
     def move_left(self):
         """向左移動"""
+        self.rect.x -= 20
+        if self.rect.left < 0:
+            self.rect.left = 0
 
     def move_right(self):
         """向右移動"""
+        self.rect.x += 20
+        if self.rect.right > WIDTH:
+            self.rect.right = WIDTH
+    
+    def update(self) -> None:
+        """更新畫面"""
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT]:
+            self.move_left()
+        if keys[pygame.K_RIGHT]:
+            self.move_right()
+        
 
 
 class Coin(pygame.sprite.Sprite):
@@ -59,8 +75,6 @@ def main() -> None:
     board = pygame.transform.scale(board, (1180 * 3, 548 * 3))
     mini_man = Player()
     all_sprites.add(mini_man)
-    screen.blit(board, (0, 0))
-    all_sprites.draw(screen)
     running = True
     pygame.display.update()
     while running:
@@ -68,11 +82,11 @@ def main() -> None:
             if event.type == pygame.QUIT:
                 running = False
         clock.tick(FPS)
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
-            pass
-        if keys[pygame.K_RIGHT]:
-            pass
+        screen.fill(BLACK)
+        all_sprites.update()
+        screen.blit(board, (0, 0))
+        all_sprites.draw(screen)
+        pygame.display.update()
     pygame.quit()
 
 
