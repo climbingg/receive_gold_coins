@@ -27,6 +27,9 @@ score = [0]
 font = pygame.font.SysFont("Arial", 108)
 final_font = pygame.font.SysFont("Arial", 600)
 
+# 聲音
+get_coins_sound = pygame.mixer.Sound("sound/get_gold_coins.wav")
+
 
 class Player(pygame.sprite.Sprite):
     """玩家角色"""
@@ -80,6 +83,7 @@ class Coin(pygame.sprite.Sprite):
         if self.rect.bottom > HEIGHT:
             self.kill()
         if pygame.sprite.spritecollide(mini_man, [self], False):
+            get_coins_sound.play()
             score[0] += 100
             self.kill()
 
@@ -88,7 +92,6 @@ def main() -> None:
     """主程式"""
     pygame.mixer.music.load(os.path.join("sound", "background.ogg"))
     pygame.mixer.music.play(-1)
-    get_coins_sound = pygame.mixer.Sound("sound/get_gold_coins.wav")
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("receve glod coins game")
     clock = pygame.time.Clock()
