@@ -86,12 +86,14 @@ def main() -> None:
     pygame.mixer.music.play(-1)
     pygame.display.set_caption("receve glod coins game")
     clock = pygame.time.Clock()
+
     # 引入圖片
     board = pygame.image.load("img/board.png")
     board = pygame.transform.scale(board, (1180 * 3, 548 * 3))
     all_sprites.add(mini_man)
     running = True
     t = time.time()
+
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -118,6 +120,7 @@ def main() -> None:
         text_rect = rendered_text.get_rect(center=(3000, 200))
         screen.blit(rendered_text, text_rect)
         pygame.display.update()
+
     pygame.quit()
 
 
