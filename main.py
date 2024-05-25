@@ -30,6 +30,9 @@ final_font = pygame.font.SysFont("Arial", 600)
 # 聲音
 get_coins_sound = pygame.mixer.Sound("sound/get_gold_coins.wav")
 
+# 視窗
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+
 
 class Player(pygame.sprite.Sprite):
     """玩家角色"""
@@ -42,25 +45,14 @@ class Player(pygame.sprite.Sprite):
         self.rect.centery = HEIGHT - 250
         self.rect.centerx = WIDTH / 2
 
-    def move_left(self):
-        """向左移動"""
-        self.rect.x -= 20
-        if self.rect.left < 0:
-            self.rect.left = 0
-
-    def move_right(self):
-        """向右移動"""
-        self.rect.x += 20
-        if self.rect.right > WIDTH:
-            self.rect.right = WIDTH
-    
     def update(self) -> None:
         """更新畫面"""
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
-            self.move_left()
+            self.rect.x -= 20
         if keys[pygame.K_RIGHT]:
-            self.move_right()
+            self.rect.x += 20
+        self.rect.clamp_ip(screen.get_rect())
 
 
 mini_man = Player()
@@ -92,7 +84,6 @@ def main() -> None:
     """主程式"""
     pygame.mixer.music.load(os.path.join("sound", "background.ogg"))
     pygame.mixer.music.play(-1)
-    screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("receve glod coins game")
     clock = pygame.time.Clock()
     # 引入圖片
@@ -100,7 +91,6 @@ def main() -> None:
     board = pygame.transform.scale(board, (1180 * 3, 548 * 3))
     all_sprites.add(mini_man)
     running = True
-    pygame.display.update()
     t = time.time()
     while running:
         for event in pygame.event.get():
